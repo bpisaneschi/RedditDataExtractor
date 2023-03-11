@@ -1,6 +1,8 @@
 import yfinance as yf
 from app_components import *
 
+server = app.server
+
 app.layout = html.Div([
     header_block,
     main_graph_block
