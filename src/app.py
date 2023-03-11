@@ -1,4 +1,3 @@
-
 import yfinance as yf
 from app_components import *
 
