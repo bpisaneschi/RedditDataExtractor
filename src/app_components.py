@@ -5,7 +5,8 @@ import dash_bootstrap_components as dbc
 import dash
 import pandas as pd
 
-subreddit_graph_data = pd.read_feather('/Users/brianpisaneschi/Library/CloudStorage/GoogleDrive-pisaneschi.brian.m@gmail.com/My Drive/Data Repos/Reddit/graph_data/bitcoin_w_zhayunduo-roberta-base-stocktwits-finetuned.feather')
+subreddit_graph_data = pd.read_feather('https://www.googleapis.com/drive/v3/files/1--AaZA3iAwR5wOYVFGhwcP1MbuyN9BUz?alt=media&key=AIzaSyDMT0mK3YGByRkdxToNYGdLfvr_ucGIKrE')
+labeled_data = pd.read_feather('https://www.googleapis.com/drive/v3/files/1IMqhvQ7d33dt_Sw8wg40PX1DZOvDYfif?alt=media&key=AIzaSyDMT0mK3YGByRkdxToNYGdLfvr_ucGIKrE')
 
 app = dash.Dash(__name__,
                 external_stylesheets=[dbc.themes.LUX],
@@ -46,6 +47,16 @@ metric_radio_items = dcc.RadioItems(
     value = '5dayema'
 )
 
+isolate_word_input = dcc.Input(
+    id='isolate_word_input',
+    placeholder='Input a seed word to isolate',
+    debounce=True
+)
+
+isolate_word_text = html.P(
+    "Input a seed word to isolate in the data:",
+    style = {'font-wight':'bold','text-align':'right'}
+)
 
 second_axis_ticker_input = dcc.Input(
     id = 'ticker_input', 
@@ -75,6 +86,11 @@ metric_block = dbc.Row([
     dbc.Col(metric_radio_items)
 ])
 
+isolate_word_block = dbc.Row([
+    dbc.Col(isolate_word_text,width=3),
+    dbc.Col(isolate_word_input)
+])
+
 second_axis_input_block = dbc.Row([
     dbc.Col(input_ticker_text),
     dbc.Col(second_axis_ticker_input)
@@ -82,6 +98,7 @@ second_axis_input_block = dbc.Row([
 
 graph_and_metric_block = dbc.Col([
     metric_block,
+    isolate_word_block,
     main_graph,
     second_axis_input_block
 ])
