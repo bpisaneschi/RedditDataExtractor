@@ -12,6 +12,7 @@ app = dash.Dash(__name__,
                 external_stylesheets=[dbc.themes.LUX],
                 )
 
+
 # components
 
 reddit_logo = html.Img(
