@@ -48,9 +48,9 @@ def get_start_end(df):
 
 @app.callback(Output('main_graph','figure'),[Input('subreddit_radio_items','value'),Input('metric_radio_items','value'),Input('ticker_input','value'),Input('isolate_word_input','value')])
 def generate_main_graph(subreddits,metric,compare_ticker,isolation_word):
-    isolation_word = None
-    # data = generate_final_graph_datasets(labeled_data,isolation_word) if isolation_word else subreddit_graph_data
-    data = subreddit_graph_data
+    # isolation_word = None
+    data = generate_final_graph_datasets(labeled_data,isolation_word) if isolation_word else subreddit_graph_data
+    # data = subreddit_graph_data
     metric_dict = {'mean':'Daily Average','5dayma':'5-Day Moving Avg','3dayma':'3-Day Moving Avg','5dayema':'5-Day Exp Moving Avg'}
     start, end = get_start_end(subreddit_graph_data)
     close = get_price_history(compare_ticker,start,end)
