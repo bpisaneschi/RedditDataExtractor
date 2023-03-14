@@ -66,7 +66,7 @@ def generate_main_graph(subtypes,subreddits,metric,compare_ticker,
         filtered_data = data[filter]
         fig.add_trace(go.Scatter(x=filtered_data.date,y=filtered_data[metric_code],name=sub))
     fig.add_trace(go.Scatter(x=close['date'],y=close[compare_ticker],name=compare_ticker,yaxis='y2'))
-    fig.update_layout(title = {'text':f'Reddit Sentiment vs {compare_ticker} Close Price','x':0.5,'xanchor':'center'},
+    fig.update_layout(title = {'text':f'Reddit Crypto Sentiment vs {compare_ticker} Close Price','x':0.5,'xanchor':'center'},
                 xaxis_title='Date',
                 yaxis=dict(title=f'{metric} Sentiment'),
                 yaxis2=dict(title=f'{compare_ticker} Close',overlaying='y',side='right'))

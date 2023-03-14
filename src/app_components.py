@@ -22,7 +22,7 @@ reddit_logo = html.Img(
 )
 
 app_header = html.H1(
-    "Sentiment Dashboard",
+    "Crypto Sentiment Dashboard",
     style = {'text-align': 'left','font-weight':'bold','font':'VAG Rounded'}
 )
 
