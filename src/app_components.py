@@ -6,7 +6,7 @@ import dash
 import pandas as pd
 
 subreddit_graph_data = pd.read_feather('https://www.googleapis.com/drive/v3/files/1--AaZA3iAwR5wOYVFGhwcP1MbuyN9BUz?alt=media&key=AIzaSyDMT0mK3YGByRkdxToNYGdLfvr_ucGIKrE')
-labeled_data = pd.read_feather('https://www.googleapis.com/drive/v3/files/1IMqhvQ7d33dt_Sw8wg40PX1DZOvDYfif?alt=media&key=AIzaSyDMT0mK3YGByRkdxToNYGdLfvr_ucGIKrE')
+# labeled_data = pd.read_feather('https://www.googleapis.com/drive/v3/files/1IMqhvQ7d33dt_Sw8wg40PX1DZOvDYfif?alt=media&key=AIzaSyDMT0mK3YGByRkdxToNYGdLfvr_ucGIKrE')
 
 app = dash.Dash(__name__,
                 external_stylesheets=[dbc.themes.LUX],
