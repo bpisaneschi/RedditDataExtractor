@@ -18,8 +18,9 @@ def group_and_create_rolling(df,groupby_cols,inclusion_threshold):
     return df_grouped_filtered
 
 def generate_final_graph_datasets(df,isolation_word,probability_threshold=.5,inclusion_threshold=1):
+    isolation_words = isolation_word.split(',')
     include_columns = ['date','subreddit','sub_type','body','labels','score']
-    filter = (df['score'] >= probability_threshold) & (df['body'].str.contains(isolation_word))
+    filter = (df['score'] >= probability_threshold) & (df['body'].str.lower().str.contains("|".join([word.lower() for word in isolation_words])))
     df.loc[:,'sub_type'] = df['subreddit'].apply(lambda x: determine_crypto(x))
     final_filtered_df = df.loc[filter,include_columns].set_index('date')
     crypto_non_crypto_grouped = group_and_create_rolling(final_filtered_df,['sub_type'],inclusion_threshold)
@@ -46,23 +47,28 @@ def get_start_end(df):
     end = dates[-1] + pd.Timedelta(days=1)
     return start, end
 
-@app.callback(Output('main_graph','figure'),[Input('subreddit_radio_items','value'),Input('metric_radio_items','value'),Input('ticker_input','value'),Input('isolate_word_input','value')])
-def generate_main_graph(subreddits,metric,compare_ticker,isolation_word):
-    # isolation_word = None
-    data = generate_final_graph_datasets(labeled_data,isolation_word) if isolation_word else subreddit_graph_data
-    # data = subreddit_graph_data
-    metric_dict = {'mean':'Daily Average','5dayma':'5-Day Moving Avg','3dayma':'3-Day Moving Avg','5dayema':'5-Day Exp Moving Avg'}
+@app.callback(Output('main_graph','figure'),[Input('subtype_checklist_items','value'),Input('subreddit_checklist_items','value'),Input('metric_radio_items','value'),Input('ticker_input','value')
+# ,Input('isolate_word_input','value')
+])
+def generate_main_graph(subtypes,subreddits,metric,compare_ticker,
+    # isolation_word
+    ):
+    subs = subtypes + subreddits if (subtypes != None) & (subreddits != None) else subtypes if subtypes else subreddits  
+    # data = generate_final_graph_datasets(labeled_data,isolation_word) if isolation_word else subreddit_graph_data
+    data = subreddit_graph_data
+    metric_dict = {'Average':'mean','5-Day Moving Avg':'5dayma','3-Day Moving Avg':'3dayma','5-Day Exp Moving Avg':'5dayema'}
+    metric_code = metric_dict[metric]
     start, end = get_start_end(subreddit_graph_data)
     close = get_price_history(compare_ticker,start,end)
     fig = go.Figure()
-    for sub in subreddits:
+    for sub in subs:
         filter = (data['sub_type'] == sub)
         filtered_data = data[filter]
-        fig.add_trace(go.Scatter(x=filtered_data.date,y=filtered_data[metric],name=sub))
+        fig.add_trace(go.Scatter(x=filtered_data.date,y=filtered_data[metric_code],name=sub))
     fig.add_trace(go.Scatter(x=close['date'],y=close[compare_ticker],name=compare_ticker,yaxis='y2'))
     fig.update_layout(title = {'text':f'Reddit Sentiment vs {compare_ticker} Close Price','x':0.5,'xanchor':'center'},
                 xaxis_title='Date',
-                yaxis=dict(title=f'{metric_dict[metric]} Sentiment'),
+                yaxis=dict(title=f'{metric} Sentiment'),
                 yaxis2=dict(title=f'{compare_ticker} Close',overlaying='y',side='right'))
     return fig
 

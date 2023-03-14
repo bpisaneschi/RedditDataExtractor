@@ -26,26 +26,53 @@ app_header = html.H1(
     style = {'text-align': 'left','font-weight':'bold','font':'VAG Rounded'}
 )
 
-subreddit_radio_items = dcc.Checklist(
-    id = 'subreddit_radio_items',
-    labelStyle={'padding-top':'5%','display':'block','padding-left':'5%'},
-    options = [{'label':subreddit,'value':subreddit} for subreddit in subreddit_graph_data['sub_type'].unique()],
+subreddit_select_text = html.P(
+    "Select a Subreddit Type or Subreddit",
+    style = {'font-weight':'bold'}
+)
+
+subtype_text = html.P(
+    "Subreddit Type:",
+    style = {'padding-top':'5%','font-weight':'bold'}
+)
+
+subreddit_text = html.P(
+    "Subreddit:",
+    style = {'padding-top':'5%','font-weight':'bold'}
+)
+
+sub_types = ['crypto','non-crypto']
+
+subreddits = [sub for sub in subreddit_graph_data['sub_type'].unique() if sub not in sub_types]
+
+subtype_checklist_items = dcc.Checklist(
+    id = 'subtype_checklist_items',
+    labelStyle={'display':'block','padding-left':'5%'},
+    options = [{'label':sub_type,'value':sub_type} for sub_type in sub_types],
     value = ['crypto','non-crypto'],
     inputStyle={"margin-right": "10px"}
 )
 
+subreddit_checklist_items = dcc.Checklist(
+    id = 'subreddit_checklist_items',
+    labelStyle={'display':'block','padding-left':'5%'},
+    options = [{'label':subreddit,'value':subreddit} for subreddit in subreddits],
+    inputStyle={"margin-right": "10px"}
+)
+
 metric_select_text = html.P(
-    "Select a Sentiment Metric:",
+    "Select a Daily Sentiment Metric:",
     style = {'font-wight':'bold','text-align':'right'}
 )
 
-metric_options = ['mean','3dayma','5dayma','5dayema']
+metric_options = ['Avgerage','3-Day Moving Avg','5-Day Moving Avg','5-Day Exp Moving Avg']
 
 metric_radio_items = dcc.RadioItems(
     id='metric_radio_items', 
     labelStyle = {'display':'inline','padding-left':'5%'},
     options = [{'label':metric,'value':metric} for metric in metric_options],
-    value = '5dayema'
+    value = '5-Day Exp Moving Avg',
+    inputStyle={"margin-right": "10px"}
 )
 
 isolate_word_input = dcc.Input(
@@ -55,7 +82,7 @@ isolate_word_input = dcc.Input(
 )
 
 isolate_word_text = html.P(
-    "Input a seed word to isolate in the data:",
+    "Input seed words to isolate:",
     style = {'font-wight':'bold','text-align':'right'}
 )
 
@@ -76,6 +103,14 @@ main_graph = dcc.Graph(
 )
 
 #blocks
+
+subreddit_select_block = dbc.Col([
+    subreddit_select_text,
+    subtype_text,
+    subtype_checklist_items,
+    subreddit_text,
+    subreddit_checklist_items,
+])
 
 header_block = dbc.Row([
     dbc.Col(reddit_logo,width=4),
@@ -99,12 +134,12 @@ second_axis_input_block = dbc.Row([
 
 graph_and_metric_block = dbc.Col([
     metric_block,
-    isolate_word_block,
+    # isolate_word_block,
     main_graph,
     second_axis_input_block
 ])
 
 main_graph_block = dbc.Row([
-    dbc.Col(subreddit_radio_items,width=2,align='center'),
+    dbc.Col(subreddit_select_block,width=2,align='center'),
     dbc.Col(graph_and_metric_block,width=10),
 ])
